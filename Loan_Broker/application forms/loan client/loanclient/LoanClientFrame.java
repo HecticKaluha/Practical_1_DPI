@@ -1,23 +1,16 @@
-package loanclient;
+import org.apache.activemq.ActiveMQConnectionFactory;
+
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.jms.Connection;
+import javax.jms.MessageProducer;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import messaging.requestreply.RequestReply;
-import model.loan.*;
 
 public class LoanClientFrame extends JFrame {
 
@@ -109,11 +102,24 @@ public class LoanClientFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				int ssn = Integer.parseInt(tfSSN.getText());
 				int amount = Integer.parseInt(tfAmount.getText());
-				int time = Integer.parseInt(tfTime.getText());				
+				int time = Integer.parseInt(tfTime.getText());
+				Connection connection;
+
+				///http://activemq.apache.org/hello-world.html
+				try
+				{
+					connection = ConnectionManager.getNewConnection();
+				}
+				catch(CouldNotCreateConnectionException e)
+				{
+					System.out.print(e.getMessage());
+				}
 				
 				LoanRequest request = new LoanRequest(ssn,amount,time);
 				listModel.addElement( new RequestReply<LoanRequest,LoanReply>(request, null));	
 				// to do:  send the JMS with request to Loan Broker
+
+
 			}
 		});
 		GridBagConstraints gbc_btnQueue = new GridBagConstraints();
@@ -159,6 +165,7 @@ public class LoanClientFrame extends JFrame {
 			public void run() {
 				try {
 					LoanClientFrame frame = new LoanClientFrame();
+
 					
 					frame.setVisible(true);
 				} catch (Exception e) {

@@ -1,4 +1,3 @@
-package model.bank;
 
 /**
  * This class stores information about the bank reply

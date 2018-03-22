@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/Loan_Broker/application forms/abn amro/bank" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Loan_Broker/application forms/loan broker/loanbroker" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Loan_Broker/mix/messaging/requestreply" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Loan_Broker/mix/model/bank" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Loan_Broker/mix/model/loan" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Loan_Broker/application forms/loan client/loanclient" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Loan_Broker/Connection" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Loan_Broker/Exception" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/Loan_Broker" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/amqp/java/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/mqtt/java/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/advanced-scenarios/jms-example-composite-destinations/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/advanced-scenarios/jms-example-durable-sub/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/advanced-scenarios/jms-example-exclusive-consumer/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/advanced-scenarios/jms-example-message-browser/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/advanced-scenarios/jms-example-queue-selector/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/advanced-scenarios/jms-example-queue/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/advanced-scenarios/jms-example-temp-destinations/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/advanced-scenarios/jms-example-topic/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/advanced-scenarios/jms-example-transaction/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/advanced-scenarios/jms-example-wildcard-consumer/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/ecommerce/src" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/QueuePTPSamples/QueueMonitor" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/QueuePTPSamples/QueueRoundTrip" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/QueuePTPSamples/RequestReply" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/QueuePTPSamples/SelectorTalk" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/QueuePTPSamples/Talk" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/QueuePTPSamples/TransactedTalk" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/TopicPubSubSamples/Chat" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/TopicPubSubSamples/DurableChat" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/TopicPubSubSamples/HierarchicalChat" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/TopicPubSubSamples/MessageMonitor" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/TopicPubSubSamples/RequestReply" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/TopicPubSubSamples/SelectorChat" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/exploring-jms/TopicPubSubSamples/TransactedChat" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/java/src/main/java" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/openwire/swissarmy/src" />
+          <root url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3/examples/stomp/java/src/main/java" />
+        </SOURCES>
+        <jarDirectory url="file://$USER_HOME$/Google Drive/!S6/DPI/jars/apache-activemq-5.15.3" recursive="false" />
+      </library>
+    </orderEntry>
+  </component>
+</module>

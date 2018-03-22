@@ -1,23 +1,10 @@
-package bank;
-import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import model.bank.*;
-import messaging.requestreply.RequestReply;
 
 public class JMSBankFrame extends JFrame {
 
@@ -25,6 +12,7 @@ public class JMSBankFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private Dimension windowSize = getSize();
 	private JPanel contentPane;
 	private JTextField tfReply;
 	private DefaultListModel<RequestReply<BankInterestRequest, BankInterestReply>> listModel = new DefaultListModel<RequestReply<BankInterestRequest, BankInterestReply>>();
@@ -36,6 +24,7 @@ public class JMSBankFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+
 					JMSBankFrame frame = new JMSBankFrame();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -51,7 +40,7 @@ public class JMSBankFrame extends JFrame {
 	public JMSBankFrame() {
 		setTitle("JMS Bank - ABN AMRO");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(1300, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
