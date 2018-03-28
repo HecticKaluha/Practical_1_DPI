@@ -1,15 +1,15 @@
 
-import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 
+import javax.jms.ExceptionListener;
+import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 
 
-public class LoanBrokerFrame extends JFrame {
+public class LoanBrokerFrame extends JFrame{
 
 	/**
 	 * 
@@ -18,6 +18,8 @@ public class LoanBrokerFrame extends JFrame {
 	private JPanel contentPane;
 	private DefaultListModel<JListLine> listModel = new DefaultListModel<JListLine>();
 	private JList<JListLine> list;
+	private static JScrollPane scrollPane;
+	private static LoanRequestListener ml;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -25,6 +27,8 @@ public class LoanBrokerFrame extends JFrame {
 				try {
 					LoanBrokerFrame frame = new LoanBrokerFrame();
 					frame.setVisible(true);
+					ml = new LoanRequestListener();
+					ml.setupMessageQueueConsumer();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -50,7 +54,7 @@ public class LoanBrokerFrame extends JFrame {
 		gbl_contentPane.rowWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridwidth = 7;
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
@@ -60,11 +64,10 @@ public class LoanBrokerFrame extends JFrame {
 		contentPane.add(scrollPane, gbc_scrollPane);
 		
 		list = new JList<JListLine>(listModel);
-		scrollPane.setViewportView(list);		
+		scrollPane.setViewportView(list);
 	}
 	
-	 private JListLine getRequestReply(LoanRequest request){    
-	     
+	 private JListLine getRequestReply(LoanRequest request){
 	     for (int i = 0; i < listModel.getSize(); i++){
 	    	 JListLine rr =listModel.get(i);
 	    	 if (rr.getLoanRequest() == request){
@@ -75,7 +78,7 @@ public class LoanBrokerFrame extends JFrame {
 	     return null;
 	   }
 	
-	public void add(LoanRequest loanRequest){		
+	public void add(LoanRequest loanRequest){
 		listModel.addElement(new JListLine(loanRequest));		
 	}
 	
@@ -91,10 +94,8 @@ public class LoanBrokerFrame extends JFrame {
 	public void add(LoanRequest loanRequest, BankInterestReply bankReply){
 		JListLine rr = getRequestReply(loanRequest);
 		if (rr!= null && bankReply != null){
-			rr.setBankReply(bankReply);;
+			rr.setBankReply(bankReply);
             list.repaint();
 		}		
 	}
-
-
 }

@@ -26,13 +26,12 @@ public class ConnectionManager {
     public static Connection getNewConnection() throws CouldNotCreateConnectionException {
         Connection connection;
         try {
-            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost:8161");
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
             connection = connectionFactory.createConnection();
         }
         catch (JMSException e){
             throw new CouldNotCreateConnectionException(e.getMessage());
         }
-
         return connection;
     }
 

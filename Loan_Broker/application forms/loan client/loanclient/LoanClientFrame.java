@@ -6,8 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.jms.Connection;
-import javax.jms.MessageProducer;
+import javax.jms.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -27,6 +26,8 @@ public class LoanClientFrame extends JFrame {
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
 	private JTextField tfTime;
+
+	private String correlationID = "Stefano";
 
 	/**
 	 * Create the frame.
@@ -103,23 +104,52 @@ public class LoanClientFrame extends JFrame {
 				int ssn = Integer.parseInt(tfSSN.getText());
 				int amount = Integer.parseInt(tfAmount.getText());
 				int time = Integer.parseInt(tfTime.getText());
-				Connection connection;
 
-				///http://activemq.apache.org/hello-world.html
+				Session session = null;
+				Connection connection = null;
 				try
 				{
 					connection = ConnectionManager.getNewConnection();
+					connection.start();
+
+					session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+					Destination destination = session.createQueue("LoanRequestQueue");
+
+					MessageProducer producer = session.createProducer(destination);
+					producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
+					LoanRequest request = new LoanRequest(ssn,amount,time);
+
+					listModel.addElement( new RequestReply<LoanRequest,LoanReply>(request, null));
+
+					ObjectMessage message = session.createObjectMessage(request);
+					Destination replyDestination = session.createQueue("LoanRequestReplyQueue");
+
+					message.setJMSReplyTo(replyDestination);
+					message.setJMSCorrelationID(correlationID);
+
+					System.out.println("Sending message: "+ request.toString() + " : " + Thread.currentThread().getName());
+					producer.send(message);
+					System.out.println("Sent message: "+ request.toString() + " : " + Thread.currentThread().getName());
+					session.close();
+					connection.close();
 				}
-				catch(CouldNotCreateConnectionException e)
+				catch(CouldNotCreateConnectionException | JMSException e)
 				{
 					System.out.print(e.getMessage());
 				}
-				
-				LoanRequest request = new LoanRequest(ssn,amount,time);
-				listModel.addElement( new RequestReply<LoanRequest,LoanReply>(request, null));	
-				// to do:  send the JMS with request to Loan Broker
-
-
+				finally {
+					try{
+						if (session != null && connection != null) {
+							session.close();
+							connection.close();
+						}
+					}
+					catch(JMSException e)
+					{
+						System.out.print(e.getMessage());
+					}
+				}
 			}
 		});
 		GridBagConstraints gbc_btnQueue = new GridBagConstraints();
@@ -156,7 +186,6 @@ public class LoanClientFrame extends JFrame {
     		 return rr;
     	 }
      }
-     
      return null;
    }
 	
@@ -165,7 +194,6 @@ public class LoanClientFrame extends JFrame {
 			public void run() {
 				try {
 					LoanClientFrame frame = new LoanClientFrame();
-
 					
 					frame.setVisible(true);
 				} catch (Exception e) {

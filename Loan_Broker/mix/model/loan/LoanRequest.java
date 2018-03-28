@@ -1,3 +1,4 @@
+import java.io.Serializable;
 
 /**
  *
@@ -5,7 +6,7 @@
  * request that a client submits to get a loan.
  *
  */
-public class LoanRequest {
+public class LoanRequest implements Serializable {
 
     private int ssn; // unique client number.
     private int amount; // the ammount to borrow
