@@ -20,6 +20,7 @@ public class LoanBrokerFrame extends JFrame{
 	private JList<JListLine> list;
 	private static JScrollPane scrollPane;
 	private static LoanRequestListener ml;
+	private static BankReplyListener bl;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -29,6 +30,8 @@ public class LoanBrokerFrame extends JFrame{
 					frame.setVisible(true);
 					ml = new LoanRequestListener();
 					ml.setupMessageQueueConsumer();
+					bl = new BankReplyListener();
+					bl.setupMessageQueueConsumer();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

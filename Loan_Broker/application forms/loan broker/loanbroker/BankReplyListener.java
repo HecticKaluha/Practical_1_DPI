@@ -4,7 +4,7 @@ import javax.jms.*;
 import javax.swing.*;
 import java.io.Serializable;
 
-public class LoanRequestListener implements MessageListener {
+public class BankReplyListener implements MessageListener {
     private Session session;
     private boolean transacted = false;
     private MessageProducer replyProducer;
@@ -18,13 +18,13 @@ public class LoanRequestListener implements MessageListener {
 
     static {
         messageBrokerUrl = "tcp://localhost:61616";
-        messageQueueName = "LoanRequestQueue";
+        messageQueueName = "BankLoanRequestReplyQueue";
         ackMode = Session.AUTO_ACKNOWLEDGE;
     }
 
-    private String correlationID = "LoanRequestListener";
+    private String correlationID = "BankReplyListener";
 
-    public LoanRequestListener() {
+    public BankReplyListener() {
         /*try {
             //This message broker is embedded
             //BrokerService broker = new BrokerService();
@@ -67,11 +67,10 @@ public class LoanRequestListener implements MessageListener {
         try {
             TextMessage response = this.session.createTextMessage();
             if (message instanceof ObjectMessage) {
-                System.out.print("\n I got your Loanrequest! The Request was: " + message.toString());
+                System.out.print("\n I got your BankReply! The Reply was: " + message.toString());
                 response.setText("\n OK");
-
-                //send request to bank
-                sendRequestToBank(((ObjectMessage) message).getObject());
+                //send reply to client from bank
+                sendReplyToClient(((ObjectMessage) message).getObject());
 
             }
             else{
@@ -84,19 +83,19 @@ public class LoanRequestListener implements MessageListener {
 
 
             //respond only when you received reply from bank
-            response.setJMSCorrelationID(message.getJMSCorrelationID());
-            this.replyProducer.send(message.getJMSReplyTo(), response);
+            //response.setJMSCorrelationID(message.getJMSCorrelationID());
+            //this.replyProducer.send(message.getJMSReplyTo(), response);
         } catch (JMSException e) {
-            System.out.print("\n Something went wrong: " + e.getMessage());
+            System.out.print("Something went wrong: " + e.getMessage());
         }
     }
     public static void main(String[] args) {
-        new LoanRequestListener();
+        new BankReplyListener();
     }
 
-    public void sendRequestToBank(Serializable loanRequest)
+    public void sendReplyToClient(Serializable bankReply)
     {
-        LoanRequest lr = (LoanRequest)loanRequest;
+        BankInterestReply lr = (BankInterestReply)bankReply;
         Session session = null;
         Connection connection = null;
         try
@@ -105,19 +104,19 @@ public class LoanRequestListener implements MessageListener {
             connection.start();
 
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Destination destination = session.createQueue("BankLoanRequestQueue");
+            Destination destination = session.createQueue("LoanRequestReplyQueue");
 
             MessageProducer producer = session.createProducer(destination);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
 
             ObjectMessage message = session.createObjectMessage(lr);
-            Destination replyDestination = session.createQueue("BankLoanRequestReplyQueue");
+            //Destination replyDestination = session.createQueue("BankLoanRequestReplyQueue");
 
-            message.setJMSReplyTo(replyDestination);
+            //message.setJMSReplyTo(replyDestination);
             message.setJMSCorrelationID(correlationID);
 
-            System.out.println("\n Sending Client Loanrequest to bank: "+ lr.toString() + " : " + Thread.currentThread().getName());
+            System.out.println("\n Sending BankinterestReply to client: "+ lr.toString() + " : " + Thread.currentThread().getName());
             producer.send(message);
             System.out.println("\n Sent message: "+ lr.toString() + " : " + Thread.currentThread().getName());
             session.close();

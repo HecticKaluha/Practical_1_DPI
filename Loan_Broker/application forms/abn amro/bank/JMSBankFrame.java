@@ -16,6 +16,8 @@ public class JMSBankFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField tfReply;
 	private DefaultListModel<RequestReply<BankInterestRequest, BankInterestReply>> listModel = new DefaultListModel<RequestReply<BankInterestRequest, BankInterestReply>>();
+
+	private static BankLoanRequestListener ml;
 	
 	/**
 	 * Launch the application.
@@ -27,6 +29,10 @@ public class JMSBankFrame extends JFrame {
 
 					JMSBankFrame frame = new JMSBankFrame();
 					frame.setVisible(true);
+					ml = new BankLoanRequestListener();
+					ml.setupMessageQueueConsumer();
+
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -84,11 +90,14 @@ public class JMSBankFrame extends JFrame {
 		JButton btnSendReply = new JButton("send reply");
 		btnSendReply.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
+
 				RequestReply<BankInterestRequest, BankInterestReply> rr = list.getSelectedValue();
 				double interest = Double.parseDouble((tfReply.getText()));
 				BankInterestReply reply = new BankInterestReply(interest,"ABN AMRO");
-				if (rr!= null && reply != null){
-					rr.setReply(reply);
+				if (/*rr!= null &&*/ reply != null){
+					//rr.setReply(reply);
+					ml.sendResponse(reply);
 	                list.repaint();
 					// todo: sent JMS message with the reply to Loan Broker
 				}

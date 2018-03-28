@@ -27,6 +27,8 @@ public class LoanClientFrame extends JFrame {
 	private JLabel lblNewLabel_1;
 	private JTextField tfTime;
 
+	private static BrokerReplyListener bl;
+
 	private String correlationID = "Stefano";
 
 	/**
@@ -128,15 +130,15 @@ public class LoanClientFrame extends JFrame {
 					message.setJMSReplyTo(replyDestination);
 					message.setJMSCorrelationID(correlationID);
 
-					System.out.println("Sending message: "+ request.toString() + " : " + Thread.currentThread().getName());
+					System.out.println("\n Sending client Loanrequest to broker: "+ request.toString() + " : " + Thread.currentThread().getName());
 					producer.send(message);
-					System.out.println("Sent message: "+ request.toString() + " : " + Thread.currentThread().getName());
+					System.out.println("\n Sent message: "+ request.toString() + " : " + Thread.currentThread().getName());
 					session.close();
 					connection.close();
 				}
 				catch(CouldNotCreateConnectionException | JMSException e)
 				{
-					System.out.print(e.getMessage());
+					System.out.print("\n" + e.getMessage());
 				}
 				finally {
 					try{
@@ -147,7 +149,7 @@ public class LoanClientFrame extends JFrame {
 					}
 					catch(JMSException e)
 					{
-						System.out.print(e.getMessage());
+						System.out.print("\n" + e.getMessage());
 					}
 				}
 			}
@@ -194,7 +196,8 @@ public class LoanClientFrame extends JFrame {
 			public void run() {
 				try {
 					LoanClientFrame frame = new LoanClientFrame();
-					
+					bl = new BrokerReplyListener();
+					bl.setupMessageQueueConsumer();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
