@@ -9,6 +9,8 @@ public class BankReplyListener implements MessageListener {
     private boolean transacted = false;
     private MessageProducer replyProducer;
 
+    private LoanBrokerFrame brokerFrame = null;
+
     private static final int ackMode;
 
     private static final String messageBrokerUrl;
@@ -23,6 +25,14 @@ public class BankReplyListener implements MessageListener {
     }
 
     private String correlationID = "BankReplyListener";
+
+    public LoanBrokerFrame getBrokerFrame() {
+        return brokerFrame;
+    }
+
+    public void setBrokerFrame(LoanBrokerFrame brokerFrame) {
+        this.brokerFrame = brokerFrame;
+    }
 
     public BankReplyListener() {
         /*try {
@@ -65,26 +75,21 @@ public class BankReplyListener implements MessageListener {
     @Override
     public void onMessage(Message message) {
         try {
-            TextMessage response = this.session.createTextMessage();
             if (message instanceof ObjectMessage) {
                 System.out.print("\n I got your BankReply! The Reply was: " + message.toString());
-                response.setText("\n OK");
-                //send reply to client from bank
-                sendReplyToClient(((ObjectMessage) message).getObject());
 
+                RequestReply<BankInterestRequest, BankInterestReply> rr = (RequestReply<BankInterestRequest, BankInterestReply>)((ObjectMessage) message).getObject();
+                LoanRequest lr = new LoanRequest();
+                lr.setAmount(rr.getRequest().getAmount());
+                lr.setTime(rr.getRequest().getTime());
+
+                brokerFrame.add(lr, rr.getReply());
+                //send reply to client from bank
+                sendReplyToClient(rr.getReply());
             }
             else{
                 System.out.print("\n Something went wrong while de-enqueueing the message");
             }
-
-
-
-
-
-
-            //respond only when you received reply from bank
-            //response.setJMSCorrelationID(message.getJMSCorrelationID());
-            //this.replyProducer.send(message.getJMSReplyTo(), response);
         } catch (JMSException e) {
             System.out.print("Something went wrong: " + e.getMessage());
         }
@@ -95,7 +100,7 @@ public class BankReplyListener implements MessageListener {
 
     public void sendReplyToClient(Serializable bankReply)
     {
-        BankInterestReply lr = (BankInterestReply)bankReply;
+        BankInterestReply bir = (BankInterestReply)bankReply;
         Session session = null;
         Connection connection = null;
         try
@@ -110,15 +115,15 @@ public class BankReplyListener implements MessageListener {
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
 
-            ObjectMessage message = session.createObjectMessage(lr);
+            ObjectMessage message = session.createObjectMessage(bir);
             //Destination replyDestination = session.createQueue("BankLoanRequestReplyQueue");
 
             //message.setJMSReplyTo(replyDestination);
             message.setJMSCorrelationID(correlationID);
 
-            System.out.println("\n Sending BankinterestReply to client: "+ lr.toString() + " : " + Thread.currentThread().getName());
+            System.out.println("\n Sending BankinterestReply to client: "+ bir.toString() + " : " + Thread.currentThread().getName());
             producer.send(message);
-            System.out.println("\n Sent message: "+ lr.toString() + " : " + Thread.currentThread().getName());
+            System.out.println("\n Sent message: "+ bir.toString() + " : " + Thread.currentThread().getName());
             session.close();
             connection.close();
         }

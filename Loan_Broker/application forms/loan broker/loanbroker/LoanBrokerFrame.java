@@ -28,10 +28,6 @@ public class LoanBrokerFrame extends JFrame{
 				try {
 					LoanBrokerFrame frame = new LoanBrokerFrame();
 					frame.setVisible(true);
-					ml = new LoanRequestListener();
-					ml.setupMessageQueueConsumer();
-					bl = new BankReplyListener();
-					bl.setupMessageQueueConsumer();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -68,12 +64,19 @@ public class LoanBrokerFrame extends JFrame{
 		
 		list = new JList<JListLine>(listModel);
 		scrollPane.setViewportView(list);
+
+		ml = new LoanRequestListener();
+		ml.setupMessageQueueConsumer();
+		bl = new BankReplyListener();
+		bl.setupMessageQueueConsumer();
+		ml.setBrokerFrame(this);
+		bl.setBrokerFrame(this);
 	}
 	
 	 private JListLine getRequestReply(LoanRequest request){
 	     for (int i = 0; i < listModel.getSize(); i++){
 	    	 JListLine rr =listModel.get(i);
-	    	 if (rr.getLoanRequest() == request){
+	    	 if ((rr.getLoanRequest().getTime() == request.getTime() && (rr.getLoanRequest().getAmount() == request.getAmount()))){
 	    		 return rr;
 	    	 }
 	     }

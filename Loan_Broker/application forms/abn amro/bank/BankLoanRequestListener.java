@@ -17,6 +17,8 @@ public class BankLoanRequestListener implements MessageListener {
 
     private ObjectMessage response =null;
 
+    private JMSBankFrame bf;
+
     static {
         messageBrokerUrl = "tcp://localhost:61616";
         messageQueueName = "BankLoanRequestQueue";
@@ -65,13 +67,22 @@ public class BankLoanRequestListener implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        if (message instanceof ObjectMessage) {
-            System.out.print("\n I got your BrokerLoanRequest! The BrokerLoanRequest was: " + message.toString());
-            //TODO: set message to a line and add to scrollpane.
-        }
-        else{
-            System.out.print("\n Something went wrong while de-enqueueing the message");
-        }
+            try {
+                if (message instanceof ObjectMessage) {
+                    System.out.print("\n I got your BrokerLoanRequest! The BrokerLoanRequest was: " + message.toString());
+                    //TODO: set message to a line and add to scrollpane.
+
+                    BankInterestRequest bir = (BankInterestRequest)((ObjectMessage) message).getObject();
+                    bf.add(bir);
+                }
+                else{
+                    System.out.print("\n Something went wrong while de-enqueueing the message");
+                }
+            }
+            catch (JMSException e) {
+                e.printStackTrace();
+            }
+
     }
 
 
@@ -79,11 +90,10 @@ public class BankLoanRequestListener implements MessageListener {
         new BankLoanRequestListener();
     }
 
-    public void sendResponse(Serializable bankreply) {
+    public void sendResponse(RequestReply<BankInterestRequest, BankInterestReply> bankreply) {
 
         try {
             response = this.session.createObjectMessage(bankreply);
-            //respond only when bank filled in form
             //TODO: get correlationID from message from selectedline in scrollpane
             response.setJMSCorrelationID("BankReplyListener");
             //TODO: get replydestination from message from selected line in scrollpane
@@ -93,5 +103,13 @@ public class BankLoanRequestListener implements MessageListener {
         } catch (JMSException e) {
             System.out.print("\n" + e.getMessage());
         }
+    }
+
+    public JMSBankFrame getBf() {
+        return bf;
+    }
+
+    public void setBf(JMSBankFrame bf) {
+        this.bf = bf;
     }
 }

@@ -9,12 +9,15 @@ public class LoanRequestListener implements MessageListener {
     private boolean transacted = false;
     private MessageProducer replyProducer;
 
+
+
+    private LoanBrokerFrame brokerFrame = null;
+
     private static final int ackMode;
 
     private static final String messageBrokerUrl;
 
     private static final String messageQueueName;
-    private JScrollPane lbf = null;
 
     static {
         messageBrokerUrl = "tcp://localhost:61616";
@@ -35,6 +38,14 @@ public class LoanRequestListener implements MessageListener {
         } catch (Exception e) {
             //Handle the exception appropriately
         }*/
+    }
+
+    public LoanBrokerFrame getBrokerFrame() {
+        return brokerFrame;
+    }
+
+    public void setBrokerFrame(LoanBrokerFrame brokerFrame) {
+        this.brokerFrame = brokerFrame;
     }
 
     public void setupMessageQueueConsumer() {
@@ -70,6 +81,9 @@ public class LoanRequestListener implements MessageListener {
                 System.out.print("\n I got your Loanrequest! The Request was: " + message.toString());
                 response.setText("\n OK");
 
+                LoanRequest lr = (LoanRequest)((ObjectMessage) message).getObject();
+
+                brokerFrame.add(lr);
                 //send request to bank
                 sendRequestToBank(((ObjectMessage) message).getObject());
 
@@ -84,8 +98,8 @@ public class LoanRequestListener implements MessageListener {
 
 
             //respond only when you received reply from bank
-            response.setJMSCorrelationID(message.getJMSCorrelationID());
-            this.replyProducer.send(message.getJMSReplyTo(), response);
+            //response.setJMSCorrelationID(message.getJMSCorrelationID());
+            //this.replyProducer.send(message.getJMSReplyTo(), response);
         } catch (JMSException e) {
             System.out.print("\n Something went wrong: " + e.getMessage());
         }
@@ -110,8 +124,9 @@ public class LoanRequestListener implements MessageListener {
             MessageProducer producer = session.createProducer(destination);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-
-            ObjectMessage message = session.createObjectMessage(lr);
+            //TODO: send bank interest
+            BankInterestRequest bir = new BankInterestRequest(lr.getAmount(), lr.getTime());
+            ObjectMessage message = session.createObjectMessage(bir);
             Destination replyDestination = session.createQueue("BankLoanRequestReplyQueue");
 
             message.setJMSReplyTo(replyDestination);
