@@ -170,8 +170,11 @@ public class LoanClientFrame extends JFrame {
 		contentPane.add(scrollPane, gbc_scrollPane);
 		
 		requestReplyList = new JList<RequestReply<LoanRequest,LoanReply>>(listModel);
-		scrollPane.setViewportView(requestReplyList);	
-       
+		scrollPane.setViewportView(requestReplyList);
+
+		bl = new BrokerReplyListener();
+		bl.setupMessageQueueConsumer();
+		bl.setLcf(this);
 	}
 	
 	/**
@@ -183,21 +186,28 @@ public class LoanClientFrame extends JFrame {
    private RequestReply<LoanRequest,LoanReply> getRequestReply(LoanRequest request){    
      
      for (int i = 0; i < listModel.getSize(); i++){
-    	 RequestReply<LoanRequest,LoanReply> rr =listModel.get(i);
-    	 if (rr.getRequest() == request){
+		 RequestReply<LoanRequest,LoanReply> rr =listModel.get(i);
+    	 if ((rr.getRequest().getTime() == request.getTime() && (rr.getRequest().getAmount() == request.getAmount()))){
     		 return rr;
     	 }
      }
      return null;
    }
+	public void add(LoanRequest loanRequest, BankInterestReply bankReply){
+		RequestReply<LoanRequest,LoanReply> rr = getRequestReply(loanRequest);
+		if (rr!= null && bankReply != null){
+			LoanReply lr = new LoanReply(bankReply.getInterest(), bankReply.getQuoteId());
+			rr.setReply(lr);
+			requestReplyList.repaint();
+		}
+	}
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					LoanClientFrame frame = new LoanClientFrame();
-					bl = new BrokerReplyListener();
-					bl.setupMessageQueueConsumer();
+
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

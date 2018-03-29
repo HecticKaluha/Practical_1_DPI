@@ -11,10 +11,11 @@ public class BrokerReplyListener implements MessageListener {
 
     private static final int ackMode;
 
+    private LoanClientFrame lcf = null;
+
     private static final String messageBrokerUrl;
 
     private static final String messageQueueName;
-    private JScrollPane lbf = null;
 
     static {
         messageBrokerUrl = "tcp://localhost:61616";
@@ -23,6 +24,14 @@ public class BrokerReplyListener implements MessageListener {
     }
 
     private String correlationID = "BrokerReplyListener";
+
+    public LoanClientFrame getLcf() {
+        return lcf;
+    }
+
+    public void setLcf(LoanClientFrame lcf) {
+        this.lcf = lcf;
+    }
 
     public BrokerReplyListener() {
         /*try {
@@ -65,11 +74,17 @@ public class BrokerReplyListener implements MessageListener {
     @Override
     public void onMessage(Message message) {
         try {
-            TextMessage response = this.session.createTextMessage();
             if (message instanceof ObjectMessage) {
                 System.out.print("\n I got your BrokerReply! The BrokerReply was: " + message.toString());
-                response.setText("\n OK");
                 //add reply to list
+                RequestReply<BankInterestRequest, BankInterestReply> rr = (RequestReply<BankInterestRequest, BankInterestReply>)((ObjectMessage) message).getObject();
+
+
+                LoanRequest lr = new LoanRequest();
+                lr.setAmount(rr.getRequest().getAmount());
+                lr.setTime(rr.getRequest().getTime());
+
+                lcf.add(lr, rr.getReply());
             }
             else if (message instanceof TextMessage)
             {

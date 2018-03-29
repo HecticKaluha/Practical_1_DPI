@@ -85,7 +85,7 @@ public class BankReplyListener implements MessageListener {
 
                 brokerFrame.add(lr, rr.getReply());
                 //send reply to client from bank
-                sendReplyToClient(rr.getReply());
+                sendReplyToClient(rr);
             }
             else{
                 System.out.print("\n Something went wrong while de-enqueueing the message");
@@ -100,7 +100,7 @@ public class BankReplyListener implements MessageListener {
 
     public void sendReplyToClient(Serializable bankReply)
     {
-        BankInterestReply bir = (BankInterestReply)bankReply;
+        RequestReply<BankInterestRequest, BankInterestReply> rr = (RequestReply<BankInterestRequest, BankInterestReply>)bankReply;
         Session session = null;
         Connection connection = null;
         try
@@ -115,15 +115,15 @@ public class BankReplyListener implements MessageListener {
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
 
-            ObjectMessage message = session.createObjectMessage(bir);
+            ObjectMessage message = session.createObjectMessage(rr);
             //Destination replyDestination = session.createQueue("BankLoanRequestReplyQueue");
 
             //message.setJMSReplyTo(replyDestination);
             message.setJMSCorrelationID(correlationID);
 
-            System.out.println("\n Sending BankinterestReply to client: "+ bir.toString() + " : " + Thread.currentThread().getName());
+            System.out.println("\n Sending BankinterestReply to client: "+ rr.toString() + " : " + Thread.currentThread().getName());
             producer.send(message);
-            System.out.println("\n Sent message: "+ bir.toString() + " : " + Thread.currentThread().getName());
+            System.out.println("\n Sent message: "+ rr.toString() + " : " + Thread.currentThread().getName());
             session.close();
             connection.close();
         }

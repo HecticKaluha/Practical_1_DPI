@@ -133,6 +133,7 @@ public class LoanRequestListener implements MessageListener {
             message.setJMSCorrelationID(correlationID);
 
             System.out.println("\n Sending Client Loanrequest to bank: "+ lr.toString() + " : " + Thread.currentThread().getName());
+            brokerFrame.add(lr, bir);
             producer.send(message);
             System.out.println("\n Sent message: "+ lr.toString() + " : " + Thread.currentThread().getName());
             session.close();
